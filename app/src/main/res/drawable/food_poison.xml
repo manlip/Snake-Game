@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Purple poison bottle -->
+    <path
+        android:fillColor="#7B1FA2"
+        android:pathData="M22,16h20v6h-20z" />
+    <!-- Bottle body -->
+    <path
+        android:fillColor="#9C27B0"
+        android:pathData="M20,22h24c2,0 4,2 4,4v18c0,4 -3,7 -7,7h-18c-4,0 -7,-3 -7,-7v-18c0,-2 2,-4 4,-4z" />
+    <!-- Darker shading -->
+    <path
+        android:fillColor="#6A1B9A"
+        android:pathData="M24,26h16c1,0 2,1 2,2v14c0,3 -2,5 -5,5h-10c-3,0 -5,-2 -5,-5v-14c0,-1 1,-2 2,-2z" />
+    <!-- Skull symbol -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,30c-3,0 -5,2 -5,5c0,2 1,4 3,5v2h4v-2c2,-1 3,-3 3,-5c0,-3 -2,-5 -5,-5z" />
+    <path
+        android:fillColor="#212121"
+        android:pathData="M30,34a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <path
+        android:fillColor="#212121"
+        android:pathData="M34,34a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <!-- Cork/cap -->
+    <path
+        android:fillColor="#795548"
+        android:pathData="M26,14h12c1,0 2,1 2,2h-16c0,-1 1,-2 2,-2z" />
+</vector>
+

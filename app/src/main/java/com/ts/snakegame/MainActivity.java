@@ -8,6 +8,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ts.snakegame.config.GameConfig;
+import com.ts.snakegame.logic.SnakeGameLogic;
+
+/**
+ * Main Activity - handles game UI and game loop
+ * Delegates game logic to SnakeGameLogic class
+ */
 public class MainActivity extends AppCompatActivity {
 
     private GameView gameView;
@@ -17,13 +24,18 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler gameHandler;
     private Runnable gameRunnable;
-    private boolean isPaused = false;
-    private static final int GAME_SPEED = 150; // milliseconds
+    private boolean isPaused = true; // Start in paused mode
+    private int currentGameSpeed;
+    private GameConfig config;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize configuration
+        config = GameConfig.getInstance();
+        currentGameSpeed = config.baseGameSpeed;
 
         // Initialize views
         gameView = findViewById(R.id.gameView);
@@ -34,14 +46,16 @@ public class MainActivity extends AppCompatActivity {
         btnLeft = findViewById(R.id.btnLeft);
         btnRight = findViewById(R.id.btnRight);
 
-        // Set up game handler
+        // Set up game handler and loop
         gameHandler = new Handler();
         gameRunnable = new Runnable() {
             @Override
             public void run() {
                 if (!isPaused && !gameView.isGameOver()) {
                     gameView.update();
-                    gameHandler.postDelayed(this, GAME_SPEED);
+                    // Update speed dynamically based on score
+                    currentGameSpeed = config.getCurrentSpeed(gameView.getScore());
+                    gameHandler.postDelayed(this, currentGameSpeed);
                 }
             }
         };
@@ -63,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Set up control buttons
-        btnUp.setOnClickListener(v -> gameView.setDirection(GameView.Direction.UP));
-        btnDown.setOnClickListener(v -> gameView.setDirection(GameView.Direction.DOWN));
-        btnLeft.setOnClickListener(v -> gameView.setDirection(GameView.Direction.LEFT));
-        btnRight.setOnClickListener(v -> gameView.setDirection(GameView.Direction.RIGHT));
+        btnUp.setOnClickListener(v -> gameView.setDirection(SnakeGameLogic.Direction.UP));
+        btnDown.setOnClickListener(v -> gameView.setDirection(SnakeGameLogic.Direction.DOWN));
+        btnLeft.setOnClickListener(v -> gameView.setDirection(SnakeGameLogic.Direction.LEFT));
+        btnRight.setOnClickListener(v -> gameView.setDirection(SnakeGameLogic.Direction.RIGHT));
 
         // Set up pause button
         btnPause.setOnClickListener(v -> togglePause());
@@ -85,39 +99,54 @@ public class MainActivity extends AppCompatActivity {
         initGame();
     }
 
+    /**
+     * Initialize game in paused state
+     */
     private void initGame() {
         isPaused = true;
-        gameView.setPaused(true); // Sync with GameView
+        gameView.setPaused(true);
         btnPause.setText("▶"); // Show play button initially
         // Don't start game loop yet - wait for user to press play
     }
 
+    /**
+     * Start the game loop
+     */
     private void startGame() {
         isPaused = false;
         btnPause.setText("||");
-        gameHandler.postDelayed(gameRunnable, GAME_SPEED);
+        currentGameSpeed = config.baseGameSpeed;
+        gameHandler.postDelayed(gameRunnable, currentGameSpeed);
     }
 
+    /**
+     * Toggle pause/play state
+     */
     private void togglePause() {
         if (gameView.isGameOver()) return;
 
         isPaused = !isPaused;
+        gameView.setPaused(isPaused);
+
         if (isPaused) {
             btnPause.setText("▶");
             gameHandler.removeCallbacks(gameRunnable);
         } else {
             btnPause.setText("||");
-            gameHandler.postDelayed(gameRunnable, GAME_SPEED);
+            gameHandler.postDelayed(gameRunnable, currentGameSpeed);
         }
     }
 
+    /**
+     * Restart game after game over
+     */
     private void restartGame() {
         gameView.resetGame();
         isPaused = true;
-        gameView.setPaused(true); // Sync with GameView
-        btnPause.setText("▶"); // Show play button after restart
+        gameView.setPaused(true);
+        btnPause.setText("▶");
         gameHandler.removeCallbacks(gameRunnable);
-        // Wait for user to press play
+        currentGameSpeed = config.baseGameSpeed;
     }
 
     @Override
@@ -130,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!isPaused && !gameView.isGameOver()) {
-            gameHandler.postDelayed(gameRunnable, GAME_SPEED);
+            gameHandler.postDelayed(gameRunnable, currentGameSpeed);
         }
     }
 

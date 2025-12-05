@@ -3,26 +3,35 @@
     android:height="64dp"
     android:viewportWidth="64"
     android:viewportHeight="64">
+    <!-- Outer dark orange -->
     <path
-        android:fillColor="#2E7D32"
+        android:fillColor="#E65100"
         android:pathData="M6,32C6,14.3 20.3,0 38,0h12c4.4,0 8,3.6 8,8v48c0,4.4 -3.6,8 -8,8H26C14.3,64 6,55.7 6,44V32z" />
+    <!-- Inner bright orange -->
     <path
-        android:fillColor="#4CAF50"
+        android:fillColor="#FF6F00"
         android:pathData="M12,32C12,18.7 22.7,8 36,8h12c0,0 0,48 0,48H28C18.1,56 12,49.9 12,40V32z" />
+    <!-- Lighter orange highlight -->
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M16,28C16,22 20,18 28,18h16c4,0 8,4 8,8v12c0,4 -2,8 -6,8H24C18,46 16,42 16,36V28z" />
+    <!-- White eyes -->
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M40,20a4,4 0 1,1 0,8a4,4 0 1,1 0,-8z" />
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M52,20a4,4 0 1,1 0,8a4,4 0 1,1 0,-8z" />
+    <!-- Black pupils -->
     <path
         android:fillColor="#212121"
         android:pathData="M41.5,23a2,2 0 1,1 0,4a2,2 0 1,1 0,-4z" />
     <path
         android:fillColor="#212121"
-        android:pathData="M53.5,23a2,2 0 1,1 0,4a2,2 0 1,1 0,-4z" />
+        android:pathData="M53.5,23a2,2 0 1,1 0,4a2,4 0 1,1 0,-4z" />
+    <!-- Red tongue -->
     <path
-        android:fillColor="#FFB74D"
+        android:fillColor="#D32F2F"
         android:pathData="M56,36l6,-4v8z" />
 </vector>
 

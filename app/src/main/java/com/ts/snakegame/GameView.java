@@ -5,20 +5,22 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.graphics.drawable.Drawable;
 
 import androidx.core.content.ContextCompat;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+/**
+ * View layer for Snake Game - handles only rendering and user input
+ * Game logic is delegated to SnakeGameLogic class
+ */
 public class GameView extends View {
-    private static final int GRID_SIZE = 20;
+    private static final int GRID_SIZE = 15; // Reduced from 20 for bigger, more visible cells
     private static final int SWIPE_THRESHOLD = 100;
     private static final int SWIPE_VELOCITY_THRESHOLD = 100;
 
@@ -26,32 +28,18 @@ public class GameView extends View {
     private int gridWidth;
     private int gridHeight;
 
-    private List<Point> snake;
-    private Point food;
-    private Direction direction;
-    private Direction nextDirection;
-    private boolean isGameOver;
+    private SnakeGameLogic gameLogic;
     private boolean isPausedByUser;
-    private int score;
 
-    private Paint grassDarkPaint;
-    private Paint grassLightPaint;
-    private Paint snakeBodyPaint;
-    private Paint snakeHeadPaint;
-    private Paint foodPaint;
     private Paint gameOverPaint;
     private Paint textPaint;
 
-    private Random random;
     private OnScoreChangeListener scoreChangeListener;
     private OnGameOverListener gameOverListener;
     private GestureDetector gestureDetector;
     private GraphicsConfig graphicsConfig;
 
-    public enum Direction {
-        UP, DOWN, LEFT, RIGHT
-    }
-
+    // Interfaces for MainActivity compatibility
     public interface OnScoreChangeListener {
         void onScoreChange(int score);
     }
@@ -76,32 +64,6 @@ public class GameView extends View {
     }
 
     private void init(Context context) {
-        random = new Random();
-
-        // Initialize paints
-        grassDarkPaint = new Paint();
-        grassDarkPaint.setColor(ContextCompat.getColor(context, R.color.grass_dark));
-        grassDarkPaint.setStyle(Paint.Style.FILL);
-
-        grassLightPaint = new Paint();
-        grassLightPaint.setColor(ContextCompat.getColor(context, R.color.grass_light));
-        grassLightPaint.setStyle(Paint.Style.FILL);
-
-        snakeBodyPaint = new Paint();
-        snakeBodyPaint.setColor(ContextCompat.getColor(context, R.color.snake_body));
-        snakeBodyPaint.setStyle(Paint.Style.FILL);
-        snakeBodyPaint.setAntiAlias(true);
-
-        snakeHeadPaint = new Paint();
-        snakeHeadPaint.setColor(ContextCompat.getColor(context, R.color.snake_head));
-        snakeHeadPaint.setStyle(Paint.Style.FILL);
-        snakeHeadPaint.setAntiAlias(true);
-
-        foodPaint = new Paint();
-        foodPaint.setColor(ContextCompat.getColor(context, R.color.food));
-        foodPaint.setStyle(Paint.Style.FILL);
-        foodPaint.setAntiAlias(true);
-
         gameOverPaint = new Paint();
         gameOverPaint.setColor(ContextCompat.getColor(context, R.color.game_over_overlay));
         gameOverPaint.setStyle(Paint.Style.FILL);
@@ -115,24 +77,23 @@ public class GameView extends View {
         gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (gameLogic == null) return false;
                 float diffX = e2.getX() - e1.getX();
                 float diffY = e2.getY() - e1.getY();
                 if (Math.abs(diffX) > Math.abs(diffY)) {
-                    // Horizontal swipe
                     if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
-                            setDirection(Direction.RIGHT);
+                            gameLogic.setDirection(SnakeGameLogic.Direction.RIGHT);
                         } else {
-                            setDirection(Direction.LEFT);
+                            gameLogic.setDirection(SnakeGameLogic.Direction.LEFT);
                         }
                     }
                 } else {
-                    // Vertical swipe
                     if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffY > 0) {
-                            setDirection(Direction.DOWN);
+                            gameLogic.setDirection(SnakeGameLogic.Direction.DOWN);
                         } else {
-                            setDirection(Direction.UP);
+                            gameLogic.setDirection(SnakeGameLogic.Direction.UP);
                         }
                     }
                 }
@@ -141,191 +102,135 @@ public class GameView extends View {
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (isGameOver) {
+                if (gameLogic != null && gameLogic.isGameOver()) {
                     resetGame();
-                } else {
-                    // Toggle pause
-                    isPausedByUser = !isPausedByUser;
-                    invalidate();
                 }
                 return true;
             }
         });
 
         graphicsConfig = new GraphicsConfig(context);
-
-        resetGame();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        // Calculate grid dimensions based on view size
         gridWidth = w / GRID_SIZE;
         gridHeight = h / GRID_SIZE;
         cellSize = Math.min(w / gridWidth, h / gridHeight);
+
+        // Initialize game logic with grid dimensions
+        gameLogic = new SnakeGameLogic(gridWidth, gridHeight);
+        gameLogic.setEventListener(new SnakeGameLogic.GameEventListener() {
+            @Override
+            public void onScoreChanged(int score) {
+                if (scoreChangeListener != null) {
+                    scoreChangeListener.onScoreChange(score);
+                }
+                invalidate();
+            }
+
+            @Override
+            public void onGameOver(int finalScore) {
+                if (gameOverListener != null) {
+                    gameOverListener.onGameOver(finalScore);
+                }
+                invalidate();
+            }
+
+            @Override
+            public void onFoodEaten() {
+                invalidate();
+            }
+        });
 
         resetGame();
     }
 
     public void resetGame() {
-        if (gridWidth == 0 || gridHeight == 0) {
-            return; // Wait for onSizeChanged
+        if (gameLogic == null) {
+            return;
         }
-
-        snake = new ArrayList<>();
-        // Start snake in the middle
-        int startX = gridWidth / 2;
-        int startY = gridHeight / 2;
-        snake.add(new Point(startX, startY));
-        snake.add(new Point(startX - 1, startY));
-        snake.add(new Point(startX - 2, startY));
-
-        direction = Direction.RIGHT;
-        nextDirection = Direction.RIGHT;
-        isGameOver = false;
-        isPausedByUser = true; // Reset to paused state
-        score = 0;
-
-        spawnFood();
+        gameLogic.reset();
+        isPausedByUser = true;
         invalidate();
 
         if (scoreChangeListener != null) {
-            scoreChangeListener.onScoreChange(score);
+            scoreChangeListener.onScoreChange(0);
         }
     }
 
-    private void spawnFood() {
-        if (gridWidth == 0 || gridHeight == 0) {
-            return; // Wait for proper initialization
+    public void setDirection(SnakeGameLogic.Direction newDirection) {
+        if (gameLogic != null) {
+            gameLogic.setDirection(newDirection);
         }
-        do {
-            food = new Point(random.nextInt(gridWidth), random.nextInt(gridHeight));
-        } while (isPointOnSnake(food));
-    }
-
-    private boolean isPointOnSnake(Point point) {
-        for (Point segment : snake) {
-            if (segment.equals(point.x, point.y)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setDirection(Direction newDirection) {
-        // Prevent reverse direction
-        if (direction == Direction.UP && newDirection == Direction.DOWN) return;
-        if (direction == Direction.DOWN && newDirection == Direction.UP) return;
-        if (direction == Direction.LEFT && newDirection == Direction.RIGHT) return;
-        if (direction == Direction.RIGHT && newDirection == Direction.LEFT) return;
-
-        nextDirection = newDirection;
     }
 
     public void update() {
-        if (isGameOver) return;
-
-        direction = nextDirection;
-        Point head = snake.get(0);
-        Point newHead;
-
-        switch (direction) {
-            case UP:
-                newHead = new Point(head.x, head.y - 1);
-                break;
-            case DOWN:
-                newHead = new Point(head.x, head.y + 1);
-                break;
-            case LEFT:
-                newHead = new Point(head.x - 1, head.y);
-                break;
-            case RIGHT:
-                newHead = new Point(head.x + 1, head.y);
-                break;
-            default:
-                return;
+        if (gameLogic != null) {
+            gameLogic.update();
+            invalidate();
         }
-
-        // Check wall collision
-        if (newHead.x < 0 || newHead.x >= gridWidth || newHead.y < 0 || newHead.y >= gridHeight) {
-            gameOver();
-            return;
-        }
-
-        // Check self collision
-        if (isPointOnSnake(newHead)) {
-            gameOver();
-            return;
-        }
-
-        snake.add(0, newHead);
-
-        // Check food collision
-        if (newHead.equals(food.x, food.y)) {
-            score += 10;
-            spawnFood();
-            if (scoreChangeListener != null) {
-                scoreChangeListener.onScoreChange(score);
-            }
-        } else {
-            snake.remove(snake.size() - 1);
-        }
-
-        invalidate();
     }
 
-    private void gameOver() {
-        isGameOver = true;
-        if (gameOverListener != null) {
-            gameOverListener.onGameOver(score);
-        }
-        invalidate();
+    public boolean isGameOver() {
+        return gameLogic != null && gameLogic.isGameOver();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (gridWidth == 0 || gridHeight == 0) return;
+        if (gridWidth == 0 || gridHeight == 0 || gameLogic == null) return;
 
-        // Draw grass background in checkerboard pattern
+        // Draw grass background
         drawGrassBackground(canvas);
 
+        // Draw score counter in top-right corner
+        Paint scorePaint = new Paint();
+        scorePaint.setColor(0xFFFFFFFF);
+        scorePaint.setTextSize(48);
+        scorePaint.setTextAlign(Paint.Align.RIGHT);
+        scorePaint.setAntiAlias(true);
+        scorePaint.setShadowLayer(4, 2, 2, 0xFF000000);
+        canvas.drawText("Score: " + gameLogic.getScore(), getWidth() - 20, 60, scorePaint);
+
         // Draw snake
+        List<Point> snake = gameLogic.getSnake();
         for (int i = 0; i < snake.size(); i++) {
             Point segment = snake.get(i);
-            drawSnakeSegment(canvas, segment, i);
+            drawSnakeSegment(canvas, segment, i, snake.size());
         }
 
         // Draw food
+        Point food = gameLogic.getFood();
         if (food != null) {
-            drawFood(canvas);
+            drawFood(canvas, food);
         }
 
         // Draw game over overlay
-        if (isGameOver) {
+        if (gameLogic.isGameOver()) {
             canvas.drawRect(0, 0, getWidth(), getHeight(), gameOverPaint);
 
             canvas.drawText("Game Over!", getWidth() / 2f, getHeight() / 2f - 50, textPaint);
 
             Paint smallTextPaint = new Paint(textPaint);
             smallTextPaint.setTextSize(40);
-            canvas.drawText("Score: " + score, getWidth() / 2f, getHeight() / 2f + 30, smallTextPaint);
+            canvas.drawText("Score: " + gameLogic.getScore(), getWidth() / 2f, getHeight() / 2f + 30, smallTextPaint);
             canvas.drawText("Tap to Restart", getWidth() / 2f, getHeight() / 2f + 90, smallTextPaint);
         }
 
         // Draw pause overlay
-        if (isPausedByUser && !isGameOver) {
+        if (isPausedByUser && !gameLogic.isGameOver()) {
             Paint pauseOverlayPaint = new Paint();
-            pauseOverlayPaint.setColor(0x88000000); // Semi-transparent black
+            pauseOverlayPaint.setColor(0x88000000);
             pauseOverlayPaint.setStyle(Paint.Style.FILL);
             canvas.drawRect(0, 0, getWidth(), getHeight(), pauseOverlayPaint);
 
             Paint pauseTextPaint = new Paint(textPaint);
             pauseTextPaint.setTextSize(50);
-            canvas.drawText("Press Play to Start", getWidth() / 2f, getHeight() / 2f, pauseTextPaint);
+            canvas.drawText("Press Play to Start", getWidth() / 2f, getWidth() / 2f, pauseTextPaint);
         }
     }
 
@@ -344,11 +249,11 @@ public class GameView extends View {
         }
     }
 
-    private void drawSnakeSegment(Canvas canvas, Point segment, int index) {
+    private void drawSnakeSegment(Canvas canvas, Point segment, int index, int snakeSize) {
         GraphicsConfig.SnakeSegmentType type;
         if (index == 0) {
             type = GraphicsConfig.SnakeSegmentType.HEAD;
-        } else if (index == snake.size() - 1) {
+        } else if (index == snakeSize - 1) {
             type = GraphicsConfig.SnakeSegmentType.TAIL;
         } else {
             type = GraphicsConfig.SnakeSegmentType.BODY;
@@ -363,9 +268,9 @@ public class GameView extends View {
         drawable.draw(canvas);
     }
 
-    private void drawFood(Canvas canvas) {
+    private void drawFood(Canvas canvas, Point food) {
         Drawable drawable = graphicsConfig.getFoodDrawable();
-        if (drawable == null || food == null) {
+        if (drawable == null) {
             return;
         }
         int left = food.x * cellSize;
@@ -374,8 +279,25 @@ public class GameView extends View {
         drawable.draw(canvas);
     }
 
-    public boolean isGameOver() {
-        return isGameOver;
+    /**
+     * Draw obstacle at position
+     */
+    private void drawObstacle(Canvas canvas, Point obstacle) {
+        // For now, draw simple rectangle for obstacles
+        Paint obstaclePaint = new Paint();
+        obstaclePaint.setColor(0xFF424242); // Dark gray
+        obstaclePaint.setStyle(Paint.Style.FILL);
+
+        int left = obstacle.x * cellSize;
+        int top = obstacle.y * cellSize;
+        canvas.drawRect(left, top, left + cellSize, top + cellSize, obstaclePaint);
+
+        // Add border
+        Paint borderPaint = new Paint();
+        borderPaint.setColor(0xFF212121);
+        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setStrokeWidth(3);
+        canvas.drawRect(left, top, left + cellSize, top + cellSize, borderPaint);
     }
 
     public void setScoreChangeListener(OnScoreChangeListener listener) {
@@ -388,11 +310,15 @@ public class GameView extends View {
 
     public void setPaused(boolean paused) {
         this.isPausedByUser = paused;
-        invalidate(); // Redraw to show/hide pause overlay
+        invalidate();
     }
 
     public boolean isPaused() {
         return isPausedByUser;
+    }
+
+    public int getScore() {
+        return gameLogic != null ? gameLogic.getScore() : 0;
     }
 
     @Override
@@ -400,3 +326,4 @@ public class GameView extends View {
         return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
     }
 }
+

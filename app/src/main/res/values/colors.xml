@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="splash_background">#1B5E20</color>
+    <color name="button_play">#4CAF50</color>
+    <color name="button_how_to_play">#2196F3</color>
+    <color name="button_back">#FF5722</color>
+
+    <!-- Game Colors -->
+    <color name="grass_dark">#2E7D32</color>
+    <color name="grass_light">#388E3C</color>
+    <color name="snake_body">#76FF03</color>
+    <color name="snake_head">#64DD17</color>
+    <color name="food">#FF1744</color>
+    <color name="game_over_overlay">#CC000000</color>
+</resources>

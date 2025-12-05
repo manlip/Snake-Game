@@ -1,0 +1,52 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Snake icon for splash screen - bright green -->
+    <!-- Snake head -->
+    <path
+        android:fillColor="#76FF03"
+        android:pathData="M40,16 h12 v12 h-12 z" />
+
+    <!-- Snake body segment 1 -->
+    <path
+        android:fillColor="#76FF03"
+        android:pathData="M28,16 h12 v12 h-12 z" />
+
+    <!-- Snake body segment 2 -->
+    <path
+        android:fillColor="#76FF03"
+        android:pathData="M28,28 h12 v12 h-12 z" />
+
+    <!-- Snake body segment 3 -->
+    <path
+        android:fillColor="#76FF03"
+        android:pathData="M28,40 h12 v12 h-12 z" />
+
+    <!-- Snake body segment 4 (tail) -->
+    <path
+        android:fillColor="#76FF03"
+        android:pathData="M16,40 h12 v12 h-12 z" />
+
+    <!-- Snake eyes on the head -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M42,18 h3 v3 h-3 z" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M47,18 h3 v3 h-3 z" />
+
+    <!-- Tongue -->
+    <path
+        android:fillColor="#FF1744"
+        android:pathData="M52,20 h2 v2 h-2 z" />
+    <path
+        android:fillColor="#FF1744"
+        android:pathData="M54,19 h1 v1 h-1 z" />
+    <path
+        android:fillColor="#FF1744"
+        android:pathData="M54,21 h1 v1 h-1 z" />
+</vector>
+

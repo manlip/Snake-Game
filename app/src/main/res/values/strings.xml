@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Snake Game</string>
+    <string name="subtitle">Classic Snake Adventure</string>
+    <string name="play">Play</string>
+    <string name="how_to_play">How to Play</string>
+    <string name="back">Back</string>
+
+    <!-- How to Play Content -->
+    <string name="objective_title">Objective</string>
+    <string name="objective_description">Control the snake to eat food and grow longer. The goal is to achieve the highest score possible without hitting the walls or the snake\'s own body.</string>
+
+    <string name="controls_title">Controls</string>
+    <string name="controls_description">• Swipe UP to move the snake upward\n• Swipe DOWN to move the snake downward\n• Swipe LEFT to move the snake to the left\n• Swipe RIGHT to move the snake to the right\n\nThe snake will continue moving in the chosen direction until you swipe to change it.</string>
+
+    <string name="rules_title">Rules</string>
+    <string name="rules_description">• The snake grows longer each time it eats food\n• Your score increases with each food item eaten\n• The game ends if the snake hits the wall\n• The game ends if the snake collides with its own body\n• The snake\'s speed may increase as you progress\n\nGood luck and have fun!</string>
+
+    <!-- Game Strings -->
+    <string name="score">Score: %1$d</string>
+    <string name="game_over">Game Over!</string>
+    <string name="tap_to_restart">Tap to Restart</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+</resources>

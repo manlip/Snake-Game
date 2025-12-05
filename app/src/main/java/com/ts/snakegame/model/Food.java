@@ -1,28 +1,21 @@
-﻿package com.ts.snakegame.model;
-}
-    }
-        return spawnTime;
-    public long getSpawnTime() {
-
-    }
-        return type;
-    public FoodType getType() {
-
-    }
-        return position;
-    public Point getPosition() {
-
-    }
-        this.spawnTime = System.currentTimeMillis();
-        this.type = type;
-        this.position = position;
-    public Food(Point position, FoodType type) {
-
-    private final long spawnTime;
-    private final FoodType type;
-    private final Point position;
-public class Food {
-
+package com.ts.snakegame.model;
 import android.graphics.Point;
-
-
+public class Food {
+    private final Point position;
+    private final FoodType type;
+    private final long spawnTime;
+    public Food(Point position, FoodType type) {
+        this.position = position;
+        this.type = type;
+        this.spawnTime = System.currentTimeMillis();
+    }
+    public Point getPosition() {
+        return position;
+    }
+    public FoodType getType() {
+        return type;
+    }
+    public long getSpawnTime() {
+        return spawnTime;
+    }
+}

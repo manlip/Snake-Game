@@ -29,15 +29,17 @@ public enum FoodType {
     private final int speedChange;
     private final String displayName;
     private final float spawnProbability;
+    private final int drawableResId;
 
     FoodType(int scoreValue, int lengthChange, int effectDuration, int speedChange,
-             String displayName, float spawnProbability) {
+             String displayName, float spawnProbability, int drawableResId) {
         this.scoreValue = scoreValue;
         this.lengthChange = lengthChange;
         this.effectDuration = effectDuration;
         this.speedChange = speedChange;
         this.displayName = displayName;
         this.spawnProbability = spawnProbability;
+        this.drawableResId = drawableResId;
     }
 
     public int getScoreValue() {
@@ -66,6 +68,14 @@ public enum FoodType {
 
     public boolean isTemporaryEffect() {
         return effectDuration > 0;
+    }
+
+    /**
+     * Get the drawable resource ID for this food type
+     * @return Android drawable resource ID
+     */
+    public int getDrawableResId() {
+        return drawableResId;
     }
 }
 

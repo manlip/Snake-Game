@@ -12,7 +12,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.core.content.ContextCompat;
-
+import com.ts.snakegame.config.GameConfig;
+import com.ts.snakegame.logic.SnakeGameLogic;
+import com.ts.snakegame.model.Food;
+import com.ts.snakegame.model.Obstacle;
 import java.util.List;
 
 /**
@@ -20,8 +23,7 @@ import java.util.List;
  * Game logic is delegated to SnakeGameLogic class
  */
 public class GameView extends View {
-    private static final int GRID_SIZE = 15; // Reduced from 20 for bigger, more visible cells
-    private static final int SWIPE_THRESHOLD = 100;
+        private static final int SWIPE_THRESHOLD = 100;
     private static final int SWIPE_VELOCITY_THRESHOLD = 100;
 
     private int cellSize;
@@ -268,37 +270,36 @@ public class GameView extends View {
         drawable.draw(canvas);
     }
 
-    private void drawFood(Canvas canvas, Point food) {
-        Drawable drawable = graphicsConfig.getFoodDrawable();
+    /**
+     * Draw food item with appropriate drawable for its type
+     */
+    private void drawFood(Canvas canvas, Food food) {
+        Drawable drawable = graphicsConfig.getFoodDrawable(food.getType());
         if (drawable == null) {
             return;
         }
-        int left = food.x * cellSize;
-        int top = food.y * cellSize;
+        Point position = food.getPosition();
+        int left = position.x * cellSize;
+        int top = position.y * cellSize;
         drawable.setBounds(left, top, left + cellSize, top + cellSize);
         drawable.draw(canvas);
     }
 
     /**
-     * Draw obstacle at position
+     * Draw obstacle with appropriate drawable for its type
      */
-    private void drawObstacle(Canvas canvas, Point obstacle) {
-        // For now, draw simple rectangle for obstacles
-        Paint obstaclePaint = new Paint();
-        obstaclePaint.setColor(0xFF424242); // Dark gray
-        obstaclePaint.setStyle(Paint.Style.FILL);
-
-        int left = obstacle.x * cellSize;
-        int top = obstacle.y * cellSize;
-        canvas.drawRect(left, top, left + cellSize, top + cellSize, obstaclePaint);
-
-        // Add border
-        Paint borderPaint = new Paint();
-        borderPaint.setColor(0xFF212121);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(3);
-        canvas.drawRect(left, top, left + cellSize, top + cellSize, borderPaint);
+    private void drawObstacle(Canvas canvas, Obstacle obstacle) {
+        Drawable drawable = graphicsConfig.getObstacleDrawable(obstacle.getType());
+        if (drawable == null) {
+            return;
+        }
+        Point position = obstacle.getPosition();
+        int left = position.x * cellSize;
+        int top = position.y * cellSize;
+        drawable.setBounds(left, top, left + cellSize, top + cellSize);
+        drawable.draw(canvas);
     }
+
 
     public void setScoreChangeListener(OnScoreChangeListener listener) {
         this.scoreChangeListener = listener;
@@ -326,4 +327,6 @@ public class GameView extends View {
         return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
     }
 }
+
+
 

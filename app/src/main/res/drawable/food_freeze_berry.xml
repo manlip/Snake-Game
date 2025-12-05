@@ -1,0 +1,41 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Blue berry body -->
+    <path
+        android:fillColor="#1976D2"
+        android:pathData="M32,12c-9,0 -16,7 -16,16c0,9 7,16 16,16c9,0 16,-7 16,-16c0,-9 -7,-16 -16,-16z" />
+    <!-- Darker blue shading -->
+    <path
+        android:fillColor="#0D47A1"
+        android:pathData="M32,16c-6,0 -11,5 -11,11c0,6 5,11 11,11c6,0 11,-5 11,-11c0,-6 -5,-11 -11,-11z" />
+    <!-- Ice crystal overlay -->
+    <path
+        android:fillColor="#B3E5FC"
+        android:fillAlpha="0.7"
+        android:pathData="M32,18l2,4l4,1l-3,3l1,4l-4,-2l-4,2l1,-4l-3,-3l4,-1z" />
+    <!-- Snowflake pattern -->
+    <path
+        android:fillColor="#E1F5FE"
+        android:pathData="M32,22v8m-4,-4h8m-6,2l4,-4m0,4l-4,-4" />
+    <!-- Green leaf top -->
+    <path
+        android:fillColor="#388E3C"
+        android:pathData="M28,10c0,0 2,-4 4,-4c2,0 4,4 4,4c0,2 -2,3 -4,3c-2,0 -4,-1 -4,-3z" />
+    <!-- Frost particles -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.8"
+        android:pathData="M24,24a1,1 0 1,1 0,2a1,1 0 1,1 0,-2z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.8"
+        android:pathData="M38,26a1,1 0 1,1 0,2a1,1 0 1,1 0,-2z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.8"
+        android:pathData="M30,34a1,1 0 1,1 0,2a1,1 0 1,1 0,-2z" />
+</vector>
+

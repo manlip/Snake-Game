@@ -1,0 +1,51 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Strawberry body -->
+    <path
+        android:fillColor="#F44336"
+        android:pathData="M32,12c0,0 -12,4 -14,12c-2,8 2,16 8,18c6,2 12,2 18,0c6,-2 10,-10 8,-18c-2,-8 -14,-12 -20,-12z" />
+    <!-- Darker red shading -->
+    <path
+        android:fillColor="#D32F2F"
+        android:pathData="M32,16c0,0 -9,3 -10,9c-1,6 1,12 6,14c5,2 9,2 14,0c5,-2 7,-8 6,-14c-1,-6 -10,-9 -16,-9z" />
+    <!-- Seeds -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M28,24a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M36,24a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M24,30a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M32,30a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M40,30a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M28,36a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M36,36a1.5,1.5 0 1,1 0,3a1.5,1.5 0 1,1 0,-3z" />
+    <!-- Green leaves -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M26,10l-4,4l8,0z" />
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M32,8l-3,6l6,0z" />
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M38,10l-4,4l8,0z" />
+    <!-- Lightning bolt (speed indicator) -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M34,20l-4,8h3l-2,8l6,-10h-3z" />
+</vector>
+

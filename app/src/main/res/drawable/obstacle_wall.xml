@@ -1,0 +1,47 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Brick wall pattern -->
+    <!-- Row 1 -->
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M4,8h24v12h-24z" />
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M32,8h28v12h-28z" />
+    <!-- Row 2 -->
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M4,24h12v12h-12z" />
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M20,24h24v12h-24z" />
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M48,24h12v12h-12z" />
+    <!-- Row 3 -->
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M4,40h24v12h-24z" />
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M32,40h28v12h-28z" />
+    <!-- Mortar (grout lines) -->
+    <path
+        android:strokeColor="#5D4037"
+        android:strokeWidth="2"
+        android:pathData="M4,20h56m-56,16h56m-56,16h56m-44,-44v48m16,-48v48m16,-48v48" />
+    <!-- Darker edges for depth -->
+    <path
+        android:fillColor="#5D4037"
+        android:fillAlpha="0.3"
+        android:pathData="M4,8h2v44h-2zm54,0h2v44h-2z" />
+    <!-- Brick texture -->
+    <path
+        android:fillColor="#6D4C41"
+        android:fillAlpha="0.2"
+        android:pathData="M8,12h16v4h-16zm24,0h20v4h-20zm-24,16h8v4h-8zm12,0h20v4h-20zm24,0h8v4h-8zm-40,16h16v4h-16zm24,0h20v4h-20z" />
+</vector>
+
